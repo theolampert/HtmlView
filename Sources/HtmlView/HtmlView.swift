@@ -49,9 +49,9 @@ public struct HtmlElement: View, Equatable {
                         resultText = resultText + Text(beforeLink)
                     }
                     
-                    if let href = try? child.attr("href"), child.tagName() == "a" {
+                    if let href = try? child.attr("href"), let url = URL(string: href), child.tagName() == "a" {
                         let linkText = Text(childText) {
-                            $0.link = URL(string: href)
+                            $0.link = url
                             $0.underlineStyle = .single
                         }
                         resultText = resultText + linkText
@@ -137,6 +137,8 @@ public struct HtmlElement: View, Equatable {
                     }
                 }
             }
+        case element.tagName() == "table":
+            HtmlTableView(element: element)
         case element.tagName() == "br":
             Spacer()
         case ["code", "pre"].contains(element.tagName()):
