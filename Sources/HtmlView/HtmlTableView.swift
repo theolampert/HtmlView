@@ -10,13 +10,18 @@ struct HtmlTableView: View, Equatable {
         self.rows = rows
     }
     
+    struct TableRow: Identifiable, Equatable {
+        let id: UUID = UUID()
+        let text: String
+    }
+    
     let element: Element
     let headers: [String]
-    let rows: [[String]]
+    let rows: [[TableRow]]
 
-    static func parseHTMLTable(element: Element) -> ([String], [[String]]) {
+    static func parseHTMLTable(element: Element) -> ([String], [[TableRow]]) {
         var headers = [String]()
-        var rows = [[String]]()
+        var rows = [[TableRow]]()
 
         do {
             let headerElements = try element.select("th")
@@ -27,7 +32,7 @@ struct HtmlTableView: View, Equatable {
                 let dataElements = try rowElement.select("td").array()
                 let rowData = try dataElements.map { try $0.text() }
                 if !rowData.isEmpty {
-                    rows.append(rowData)
+                    rows.append(rowData.map { TableRow(text: $0) })
                 }
             }
         } catch Exception.Error(_, let message) {
@@ -53,8 +58,8 @@ struct HtmlTableView: View, Equatable {
             ForEach(0..<rows.count, id: \.self) { index in
                 Divider()
                 HStack {
-                    ForEach(rows[index], id: \.self) { cell in
-                        Text(cell)
+                    ForEach(rows[index]) { cell in
+                        Text(cell.text)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .font(.caption2)
                     }
