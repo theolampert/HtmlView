@@ -8,9 +8,17 @@ public struct HtmlImageView: View, Equatable {
     public var body: some View {
         if let src = try? element.attr("src"), !src.isEmpty, let url = URL(string: src) {
             KFImage(url)
+                .setProcessor(DownsamplingImageProcessor(
+                    size: CGSize(
+                        width: UIScreen.main.bounds.width,
+                        height: UIScreen.main.bounds.height
+                    ))
+                )
+                .scaleFactor(UIScreen.main.scale)
                 .placeholder {
                     Rectangle()
                         .foregroundColor(Color.secondary.opacity(0.2))
+                        .aspectRatio(contentMode: .fit)
                 }
                 .antialiased(true)
                 .resizable()
