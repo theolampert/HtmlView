@@ -172,8 +172,10 @@ public struct HtmlView: View, Equatable {
         if let content = try? SwiftSoup.parse(html), let elements = content.body()?.children() {
             VStack(alignment: .leading, spacing: blockSpacing) {
                 ForEach(elements, id: \.self) { element in
-                    HtmlElement(element: element, blockSpacing: blockSpacing)
-                        .equatable()
+                    HtmlElement(
+                        element: element,
+                        blockSpacing: blockSpacing
+                    ).equatable()
                 }
             }
             .textSelection(.enabled)
