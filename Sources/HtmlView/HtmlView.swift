@@ -2,6 +2,12 @@ import Kingfisher
 import SwiftSoup
 import SwiftUI
 
+extension Element {
+    var hasSingleImageChild: Bool {
+        self.children().count == 1 && self.children().first()?.tagName() == "img"
+    }
+}
+
 public struct HtmlElement: View, Equatable {
     let element: SwiftSoup.Element
     let blockSpacing: CGFloat
@@ -86,7 +92,7 @@ public struct HtmlElement: View, Equatable {
     
     public var body: some View {
         switch true {
-        case element.tagName() == "p":
+        case element.tagName() == "p" && !element.hasSingleImageChild:
             optionalTextWithInlineLinks(element)
         case element.tagName() == "small":
             optionalTextWithInlineLinks(element)
