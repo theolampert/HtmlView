@@ -34,7 +34,6 @@ public struct HtmlElement: View, Equatable {
                 Text(element.ownText())
                     .underline()
                     .multilineTextAlignment(.leading)
-                    .foregroundColor(.blue)
             })
         }
     }
@@ -54,8 +53,7 @@ public struct HtmlElement: View, Equatable {
                     if !beforeLink.isEmpty {
                         resultText = resultText + Text(beforeLink)
                     }
-                    
-                    if let href = try? child.attr("href"), let url = URL(string: href), child.tagName() == "a" {
+                    if let href = try? child.attr("href"), let url = URL(string: href), url.host != nil, child.tagName() == "a" {
                         let linkText = Text(childText) {
                             $0.link = url
                             $0.underlineStyle = .single
