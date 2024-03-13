@@ -5,7 +5,9 @@ public struct HtmlCodeView: View, Equatable {
     let element: Element
     
     public var body: some View {
-        if let text = try? element.text().replacingOccurrences(of: "\\n", with: "\n") {
+        if let text = try? element
+            .text(trimAndNormaliseWhitespace: false)
+            .replacingOccurrences(of: "\\n", with: "\n") {
             GroupBox(content: {
                 ScrollView(.horizontal) {
                     Text(text)
