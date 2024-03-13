@@ -37,82 +37,39 @@ public struct HtmlElement: View, Equatable {
             })
         }
     }
-
-    func createLinkedText(from element: Element) throws -> Text {
-        let fullText = try element.text()
-        
-        var resultText = Text("")
-        
-        if element.children().size() > 0 {
-            var lastIndex = fullText.startIndex
-            
-            for child in element.children() {
-                let childText = try child.text()
-                if let range = fullText.range(of: childText, range: lastIndex..<fullText.endIndex) {
-                    let beforeLink = String(fullText[lastIndex..<range.lowerBound])
-                    if !beforeLink.isEmpty {
-                        resultText = resultText + Text(beforeLink)
-                    }
-                    if let href = try? child.attr("href"), let url = URL(string: href), url.host != nil, child.tagName() == "a" {
-                        let linkText = Text(childText) {
-                            $0.link = url
-                            $0.underlineStyle = .single
-                        }
-                        resultText = resultText + linkText
-                    } else {
-                        resultText = resultText + Text(childText) {
-                            if child.tagName() == "strong" {
-                                $0.font = .body.bold()
-                            }
-                        }
-                    }
-                    
-                    lastIndex = range.upperBound
-                }
-            }
-            
-            let remainingText = String(fullText[lastIndex..<fullText.endIndex])
-            if !remainingText.isEmpty {
-                resultText = resultText + Text(remainingText)
-            }
-        } else {
-            resultText = Text(fullText)
-        }
-        
-        return resultText
-    }
-    
-    @ViewBuilder
-    func optionalTextWithInlineLinks(_ elem: Element) -> some View {
-        try? createLinkedText(from: elem)
-            .textSelection(.enabled)
-    }
     
     public var body: some View {
         switch true {
         case element.tagName() == "p" && !element.hasSingleImageChild:
-            optionalTextWithInlineLinks(element)
+            HtmlParagraphView(element: element)
+                .equatable()
         case element.tagName() == "small":
-            optionalTextWithInlineLinks(element)
+            HtmlParagraphView(element: element)
+                .equatable()
                 .font(.caption)
                 .foregroundColor(.secondary)
         case element.tagName() == "span" && element.hasText():
-            optionalTextWithInlineLinks(element)
+            HtmlParagraphView(element: element)
+                .equatable()
                 .font(.caption)
                 .foregroundColor(.secondary)
         case element.tagName() == "h1":
-            optionalTextWithInlineLinks(element)
+            HtmlParagraphView(element: element)
+                .equatable()
                 .font(.title2)
                 .bold()
         case element.tagName() == "h2":
-            optionalTextWithInlineLinks(element)
+            HtmlParagraphView(element: element)
+                .equatable()
                 .font(.title3)
                 .bold()
         case ["h3", "h4", "h5", "h6", "strong"].contains(element.tagName()):
-            optionalTextWithInlineLinks(element)
+            HtmlParagraphView(element: element)
+                .equatable()
                 .bold()
         case ["blockquote", "em", "italic", "i"].contains(element.tagName()):
-            optionalTextWithInlineLinks(element)
+            HtmlParagraphView(element: element)
+                .equatable()
                 .italic()
         case element.tagName() == "img":
             HtmlImageView(element: element)
@@ -128,7 +85,7 @@ public struct HtmlElement: View, Equatable {
                 ForEach(element.children(), id: \.self) { elem in
                     HStack(alignment: .firstTextBaseline) {
                         Text("•")
-                        optionalTextWithInlineLinks(elem)
+                        HtmlParagraphView(element: elem)
                     }
                 }
             }
@@ -137,7 +94,7 @@ public struct HtmlElement: View, Equatable {
                 ForEach(Array(element.children().enumerated()), id: \.0) { idx, elem in
                     HStack(alignment: .firstTextBaseline) {
                         Text("\(idx + 1).")
-                        optionalTextWithInlineLinks(elem)
+                        HtmlParagraphView(element: elem)
                     }
                 }
             }
@@ -218,13 +175,5 @@ struct HtmlRenderer_Previews: PreviewProvider {
         return ScrollView {
             HtmlView(html: html).padding()
         }
-    }
-}
-
-extension Text {
-    init(_ string: String, configure: ((inout AttributedString) -> Void)) {
-        var attributedString = AttributedString(string) /// create an `AttributedString`
-        configure(&attributedString) /// configure using the closure
-        self.init(attributedString) /// initialize a `Text`
     }
 }
