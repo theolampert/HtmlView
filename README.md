@@ -1,1 +1,1 @@
-#### Render a subset of HTML as SwiftUI views. 
+#### Render a simple subset of HTML as SwiftUI views. 
