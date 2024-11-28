@@ -152,7 +152,7 @@ struct HtmlRenderer_Previews: PreviewProvider {
         <h2>Render HTML into SwiftUI views</h2>
         <p>HtmlView is an experimental package for rendering a subset of HTML to native SwiftUI views.</p>
         <p>HtmlView makes use of <a href="https://github.com/scinfu/SwiftSoup">SwiftSoup</a> to build a tree of HTML elements and render them into roughly equivalent SwiftUI views.</p>
-        <small>Auther Name: <a href="https://www.theo.sh">Theo Lampert</a></small>
+        <small>Author Name: <a href="https://www.theo.sh">Theo Lampert</a></small>
         <img src="https://media.urbit.org/site/posts/essays/pre-03.jpg"/>
         <ul>
             <li>List item one</l1>

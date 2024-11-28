@@ -13,8 +13,8 @@ let package = Package(
             targets: ["HtmlView"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/onevcat/Kingfisher", exact: "7.11.0"),
-        .package(url: "https://github.com/scinfu/SwiftSoup", exact: "2.7.1"),
+        .package(url: "https://github.com/onevcat/Kingfisher", exact: "8.1.1"),
+        .package(url: "https://github.com/scinfu/SwiftSoup", exact: "2.7.5"),
         .package(url: "https://github.com/exyte/SVGView", exact: "1.0.6")
     ],
     targets: [
