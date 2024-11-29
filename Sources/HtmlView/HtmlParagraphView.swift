@@ -25,10 +25,22 @@ public struct HtmlParagraphView: View, Equatable {
                             $0.underlineStyle = .single
                         }
                         resultText = resultText + linkText
-                    } else if child.tagName() == "strong" {
-                        resultText = resultText + Text("**\(childText)**")
                     } else {
-                        resultText = resultText + Text(childText)
+                        let formattedText = switch child.tagName() {
+                        case "strong", "b":
+                            Text(childText).bold()
+                        case "em", "i":
+                            Text(childText).italic()
+                        case "mark":
+                            Text(childText)
+                        case "u":
+                            Text(childText).underline()
+                        case "del", "s":
+                            Text(childText).strikethrough()
+                        default:
+                            Text(childText)
+                        }
+                        resultText = resultText + formattedText
                     }
                     
                     lastIndex = range.upperBound
@@ -63,8 +75,13 @@ extension Text {
 #Preview {
     let html = """
     <p>
-    Hello, world. <a href="https://paperback.ink"> Here's an inline link</a>
-    <strong>Big bold text</strong>
+    Hello, world. <a href="https://paperback.ink">Here's an inline link</a>
+    <strong>Bold text</strong> and <b>also bold</b>
+    <em>Italic text</em> and <i>also italic</i>
+    <code>Some code</code>
+    <mark>Highlighted text</mark>
+    <u>Underlined text</u>
+    <del>Deleted text</del>
     </p>
     """
     let paragraphElement = try! SwiftSoup.parse(html).select("p").first()!
