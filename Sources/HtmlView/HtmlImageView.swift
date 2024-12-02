@@ -1,5 +1,6 @@
 import SwiftUI
-import Kingfisher
+import Nuke
+import NukeUI
 import SwiftSoup
 
 public struct HtmlImageView: View, Equatable {
@@ -7,22 +8,26 @@ public struct HtmlImageView: View, Equatable {
     
     public var body: some View {
         if let src = try? element.attr("src"), !src.isEmpty, let url = URL(string: src) {
-            KFImage(url)
-                .setProcessor(DownsamplingImageProcessor(
-                    size: CGSize(
-                        width: UIScreen.main.bounds.width,
-                        height: UIScreen.main.bounds.height
-                    ))
-                )
-                .scaleFactor(UIScreen.main.scale)
-                .placeholder {
+            LazyImage(url: url) { state in
+                if let image = state.image {
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                } else {
                     Rectangle()
                         .foregroundColor(Color.secondary.opacity(0.2))
                         .aspectRatio(contentMode: .fit)
                 }
-                .antialiased(true)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
+            }
+            .processors([
+                ImageProcessors.Resize(
+                    size: CGSize(
+                        width: UIScreen.main.bounds.width * UIScreen.main.scale,
+                        height: UIScreen.main.bounds.height * UIScreen.main.scale
+                    ),
+                    contentMode: .aspectFit
+                )
+            ])
         }
     }
 }

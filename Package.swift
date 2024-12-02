@@ -13,7 +13,7 @@ let package = Package(
             targets: ["HtmlView"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/onevcat/Kingfisher", exact: "8.1.1"),
+        .package(url: "https://github.com/kean/Nuke", exact: "12.8.0"),
         .package(url: "https://github.com/scinfu/SwiftSoup", exact: "2.7.5"),
         .package(url: "https://github.com/exyte/SVGView", exact: "1.0.6")
     ],
@@ -22,7 +22,7 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "HtmlView",
-            dependencies: ["Kingfisher", "SwiftSoup", "SVGView"]
+            dependencies: ["SwiftSoup", "SVGView", "Nuke", .product(name: "NukeUI", package: "Nuke")]
         ),
         .testTarget(
             name: "HtmlViewTests",
